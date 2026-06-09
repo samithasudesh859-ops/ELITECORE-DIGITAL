@@ -1,19 +1,23 @@
-import React, { Suspense, useEffect, useMemo } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { Sphere, Float, MeshTransmissionMaterial } from '@react-three/drei';
 import * as THREE from 'three';
+import smokeVideo from '../assets/smoke.mp4';
+
 function SmokeOverlay({ isVisible }) {
   const videos = React.useMemo(() => {
     const vidDefault = document.createElement("video");
-    vidDefault.src = "/smoke.mp4";
+    vidDefault.src = smokeVideo; // මෙතැන වෙනස් විය
     vidDefault.muted = true;
     vidDefault.loop = true;
     vidDefault.playsInline = true;
+    vidDefault.crossOrigin = "anonymous";
     
     const vidService = document.createElement("video");
-    vidService.src = "/smoke.mp4";
+    vidService.src = smokeVideo; // මෙතැන වෙනස් විය
     vidService.muted = true;
     vidService.loop = true;
     vidService.playsInline = true;
+    vidService.crossOrigin = "anonymous";
 
     return { default: vidDefault, service: vidService };
   }, []);
@@ -47,6 +51,7 @@ function SmokeOverlay({ isVisible }) {
     </Sphere>
   );
 }
+
 export default function LiquidOrb({ isVisible }) {
   return (
     <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
