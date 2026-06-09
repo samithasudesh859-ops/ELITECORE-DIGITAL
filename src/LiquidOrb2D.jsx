@@ -1,18 +1,17 @@
 import React, { Suspense, useEffect, useMemo } from 'react';
 import { Sphere, Float, MeshTransmissionMaterial } from '@react-three/drei';
 import * as THREE from 'three';
-
 function SmokeOverlay({ isVisible }) {
-  // වීඩියෝ මූලද්‍රව්‍ය නිර්මාණය
-  const videos = useMemo(() => {
+  const videos = React.useMemo(() => {
     const vidDefault = document.createElement("video");
-    vidDefault.src = "/smoke.mp4"; // ඔබේ එකම වීඩියෝ ෆයිල් එක
+    vidDefault.src = "/smoke.mp4";
     vidDefault.muted = true;
     vidDefault.loop = true;
-    vidDefault.playsInline = true;
+    vidDefault.playsInline = true; // Essential for mobile/modern browsers
     
+    // We don't have smoke1.mp4, so we use smoke.mp4 for both
     const vidService = document.createElement("video");
-    vidService.src = "/smoke.mp4"; // එකම ෆයිල් එක
+    vidService.src = "/smoke.mp4";
     vidService.muted = true;
     vidService.loop = true;
     vidService.playsInline = true;
@@ -20,17 +19,19 @@ function SmokeOverlay({ isVisible }) {
     return { default: vidDefault, service: vidService };
   }, []);
 
-  useEffect(() => {
-    const activeVideo = isVisible ? videos.service : videos.default;
-    const inactiveVideo = isVisible ? videos.default : videos.service;
+  const [texture, setTexture] = React.useState(null);
 
-    activeVideo.play().catch(() => {});
-    inactiveVideo.pause();
+  React.useEffect(() => {
+    const activeVideo = isVisible ? videos.service : videos.default;
+    
+    // Create the texture only once the video is ready to play
+    const newTexture = new THREE.VideoTexture(activeVideo);
+    setTexture(newTexture);
+
+    activeVideo.play().catch(e => console.log("Play failed:", e));
   }, [isVisible, videos]);
 
-  // Texture එක ස්ථාවරව පවත්වා ගැනීම (මෙය ඔබේ ප්‍රශ්නය විසඳයි)
-  const activeVideo = isVisible ? videos.service : videos.default;
-  const texture = useMemo(() => new THREE.VideoTexture(activeVideo), [activeVideo]);
+  if (!texture) return null;
 
   return (
     <Sphere args={[1.35, 64, 64]}> 
@@ -45,7 +46,6 @@ function SmokeOverlay({ isVisible }) {
     </Sphere>
   );
 }
-
 export default function LiquidOrb({ isVisible }) {
   return (
     <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.5}>
