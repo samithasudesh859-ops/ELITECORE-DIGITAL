@@ -7,9 +7,8 @@ function SmokeOverlay({ isVisible }) {
     vidDefault.src = "/smoke.mp4";
     vidDefault.muted = true;
     vidDefault.loop = true;
-    vidDefault.playsInline = true; // Essential for mobile/modern browsers
+    vidDefault.playsInline = true;
     
-    // We don't have smoke1.mp4, so we use smoke.mp4 for both
     const vidService = document.createElement("video");
     vidService.src = "/smoke.mp4";
     vidService.muted = true;
@@ -24,13 +23,15 @@ function SmokeOverlay({ isVisible }) {
   React.useEffect(() => {
     const activeVideo = isVisible ? videos.service : videos.default;
     
-    // Create the texture only once the video is ready to play
+    // වීඩියෝව සූදානම් වූ පසු texture එක සාදන්න
     const newTexture = new THREE.VideoTexture(activeVideo);
     setTexture(newTexture);
 
+    // ප්ලේ කරන්න උත්සාහ කරන්න
     activeVideo.play().catch(e => console.log("Play failed:", e));
   }, [isVisible, videos]);
 
+  // Texture එක නැතිනම් පන්දුව පෙන්වන්න එපා (කළු වීම වළක්වයි)
   if (!texture) return null;
 
   return (
