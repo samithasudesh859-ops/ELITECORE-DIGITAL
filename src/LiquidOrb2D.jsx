@@ -16,7 +16,7 @@ function SmokeOverlay({ isVisible }) {
     vD.playsInline = true; // Live site එකේදී අනිවාර්යයි
     vD.play().catch(() => {}); 
 
-    vS.src = "/smoke1.mp4";
+    vS.src = "/smoke.mp4";
     vS.muted = true;
     vS.loop = true;
     vS.playsInline = true; // Live site එකේදී අනිවාර්යයි
